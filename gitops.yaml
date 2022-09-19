@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitops-testing # application name
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/sbdtu5498/gitops.git # repository address in the format "https://github.com/{user-name}/{repository-name}.git".
+    targetRevision: HEAD
+    path: rootFolder # name of the root folder of the hosted git repository.
+  destination:
+    server: https://kubernetes.default.svc # this service can be used only when the Argo CD and Morphling or KubeDL is installed in the same Kubernetes cluster.
+    namespace: morphling-system # namespace in which you want the applications to be installed. Depending upon your requirements and YAML file that needs to be deployed it can be default, morphling-system or KubeDL
+  
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
+    automated:
+      selfHeal: true
+      prune: true
